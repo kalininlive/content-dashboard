@@ -13,6 +13,22 @@ export interface InstagramPost {
   createdAt: string;
 }
 
+// ─── Calendar ──────────────────────────────────────────────────────────────
+
+export type Platform = "instagram" | "youtube" | "tiktok" | "twitter" | "linkedin";
+export type CalendarStatus = "published" | "scheduled" | "draft";
+
+export interface CalendarPost {
+  id: string;
+  title: string;
+  platform: Platform;
+  type: string;        // "Reel" | "Video" | "Article" | "Post" | "Short" | "Story"
+  status: CalendarStatus;
+  date: string;        // "YYYY-MM-DD"
+  time: string;        // "HH:MM"
+  description?: string;
+}
+
 // ─── Generic (future use) ───────────────────────────────────────────────────
 
 export interface Post {
