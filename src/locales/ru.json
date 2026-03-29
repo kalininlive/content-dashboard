@@ -1,0 +1,250 @@
+{
+  "common": {
+    "cancel": "Отмена",
+    "delete": "Удалить",
+    "allPlatforms": "Все платформы",
+    "noDateSet": "Дата не указана"
+  },
+  "sidebar": {
+    "appName": "ContentDash",
+    "footer": "Content Dashboard v0.1",
+    "nav": {
+      "overview": "Обзор",
+      "instagram": "Instagram",
+      "analytics": "Аналитика",
+      "calendar": "Календарь",
+      "competitors": "Конкуренты",
+      "news": "Новости"
+    }
+  },
+  "dashboard": {
+    "title": "Обзор",
+    "subtitle": "Добро пожаловать в ваш дашборд. Выберите модуль для начала работы.",
+    "modules": {
+      "instagram": {
+        "title": "Менеджер Instagram",
+        "description": "Управление постами, Stories и расписанием",
+        "stat": "0 постов"
+      },
+      "analytics": {
+        "title": "Аналитика",
+        "description": "Охват, вовлечённость и рост аудитории",
+        "stat": "Нет данных"
+      },
+      "calendar": {
+        "title": "Календарь контента",
+        "description": "Планирование и визуализация расписания публикаций",
+        "stat": "0 запланировано"
+      },
+      "competitors": {
+        "title": "Конкуренты",
+        "description": "Мониторинг аккаунтов конкурентов и сравнительный анализ",
+        "stat": "0 отслеживается"
+      },
+      "news": {
+        "title": "Лента новостей",
+        "description": "Следите за последними новостями отрасли",
+        "stat": "0 статей"
+      }
+    }
+  },
+  "instagram": {
+    "title": "Менеджер Instagram",
+    "subtitle": "Планируйте, публикуйте и отслеживайте контент",
+    "newPost": "Новый пост",
+    "addIdea": "Добавить идею",
+    "stats": {
+      "ideas": "Идеи",
+      "drafts": "Черновики",
+      "scheduled": "Запланировано",
+      "published": "Опубликовано"
+    },
+    "tabs": {
+      "idea": "Бэклог",
+      "draft": "Черновики",
+      "scheduled": "Запланировано",
+      "published": "Опубликовано"
+    },
+    "empty": {
+      "idea": {
+        "title": "Нет идей",
+        "desc": "Фиксируйте идеи для постов, пока не забыли."
+      },
+      "draft": {
+        "title": "Нет черновиков",
+        "desc": "Переносите идеи сюда, когда начнёте работу над ними."
+      },
+      "scheduled": {
+        "title": "Ничего не запланировано",
+        "desc": "Назначьте дату и время публикации для черновиков."
+      },
+      "published": {
+        "title": "Ещё нет публикаций",
+        "desc": "Здесь будут отображаться опубликованные посты."
+      }
+    },
+    "postTypes": {
+      "image": "Изображение",
+      "carousel": "Карусель",
+      "reel": "Reels",
+      "story": "Story"
+    },
+    "statuses": {
+      "idea": "Идея",
+      "draft": "Черновик",
+      "scheduled": "Запланировано",
+      "published": "Опубликовано"
+    },
+    "actions": {
+      "moveToDraft": "В черновик",
+      "schedule": "Запланировать",
+      "markPublished": "Отметить опубликованным"
+    }
+  },
+  "createPost": {
+    "title": "Новая идея поста",
+    "descriptionLabel": "Описание",
+    "descriptionPlaceholder": "О чём пост? Опишите содержание, тон и ключевое сообщение.",
+    "postTypeLabel": "Тип поста",
+    "statusLabel": "Статус",
+    "publishDateLabel": "Дата публикации",
+    "createButton": "Создать пост"
+  },
+  "analytics": {
+    "title": "Аналитика",
+    "badge": "Metricool",
+    "subtitle": "Обзор эффективности контента",
+    "vsPrevPeriod": "к пред. периоду",
+    "kpis": {
+      "totalImpressions": "Всего показов",
+      "totalImpressionsSub": "{value} за выбранный период",
+      "avgEngagementRate": "Ср. вовлечённость",
+      "avgEngagementRateSub": "Лайки + комментарии + сохранения / охват",
+      "totalFollowers": "Всего подписчиков",
+      "totalFollowersSub": "Итого по аккаунту Instagram",
+      "newFollowers": "Новые подписчики",
+      "newFollowersSub": "Получено за выбранный период"
+    },
+    "charts": {
+      "impressionsReach": "Показы и охват",
+      "impressionsReachSub": "Ежедневные просмотры за период",
+      "engagementRate": "Вовлечённость",
+      "engagementRateSub": "% от охваченной аудитории",
+      "followerGrowth": "Рост подписчиков",
+      "followerGrowthSub": "Новые подписчики в день"
+    },
+    "topPosts": "Лучшие посты",
+    "topPostsSub": "Самый эффективный контент по показам",
+    "postTypes": {
+      "image": "Изображение",
+      "carousel": "Карусель",
+      "reel": "Reels",
+      "story": "Story"
+    }
+  },
+  "calendar": {
+    "title": "Календарь контента",
+    "subtitle": "Планируйте и публикуйте мультиплатформенный контент",
+    "todayButton": "Сегодня",
+    "allPlatforms": "Все платформы",
+    "months": [
+      "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
+      "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
+    ],
+    "days": ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
+    "statuses": {
+      "published": "Опубликовано",
+      "scheduled": "Запланировано",
+      "draft": "Черновик"
+    },
+    "legend": {
+      "published": "Опубликовано",
+      "scheduled": "Запланировано",
+      "clickHint": "Нажмите на день для просмотра"
+    },
+    "detail": {
+      "noContent": "На этот день контент не запланирован.",
+      "addPost": "Добавить пост"
+    }
+  },
+  "competitors": {
+    "title": "Конкуренты",
+    "subtitle": "Отслеживайте и сравнивайте аккаунты конкурентов",
+    "addCompetitor": "Добавить конкурента",
+    "allPlatforms": "Все платформы",
+    "stats": {
+      "tracked": "Отслеживается",
+      "avgEngagement": "Ср. вовлечённость",
+      "mostActive": "Наиболее активна",
+      "platforms": "Платформы"
+    },
+    "table": {
+      "competitor": "Конкурент",
+      "platform": "Платформа",
+      "followers": "Подписчики",
+      "engagement": "Вовлечённость",
+      "postsPerWeek": "Постов/нед.",
+      "lastPost": "Посл. пост",
+      "trend30d": "Тренд 30д",
+      "growth30d": "+30д рост",
+      "noMatch": "Нет конкурентов, соответствующих фильтру.",
+      "clickHint": "Нажмите на строку для деталей"
+    },
+    "detail": {
+      "last30Days": "за 30 дней",
+      "followerGrowthChart": "Рост подписчиков — последние 30 дней",
+      "keyMetrics": "Ключевые метрики",
+      "metrics": {
+        "followers": "Подписчики",
+        "engagement": "Вовлечённость",
+        "postsPerWeek": "Постов в неделю",
+        "totalPosts": "Всего постов",
+        "lastPost": "Последний пост"
+      },
+      "recentPosts": "Последние посты",
+      "postTable": {
+        "content": "Контент",
+        "type": "Тип",
+        "date": "Дата",
+        "likes": "Лайки",
+        "comments": "Коммент.",
+        "engRate": "Вовлечённость"
+      }
+    }
+  },
+  "addCompetitor": {
+    "title": "Добавить конкурента",
+    "nameLabel": "Отображаемое имя",
+    "namePlaceholder": "например, Buffer",
+    "handleLabel": "Аккаунт / имя пользователя",
+    "handlePlaceholder": "имя пользователя",
+    "platformLabel": "Платформа",
+    "demoNote": "Для этого конкурента будут сгенерированы демо-данные.",
+    "addButton": "Добавить конкурента"
+  },
+  "news": {
+    "title": "Лента новостей",
+    "subtitle": "Instagram и маркетинг в соцсетях — последние обновления",
+    "updatedAt": "Обновлено {time}",
+    "searchPlaceholder": "Поиск статей, источников…",
+    "allSources": "Все источники",
+    "categories": {
+      "all": "Все",
+      "tools": "Инструменты",
+      "research": "Исследования",
+      "business": "Бизнес"
+    },
+    "empty": {
+      "title": "Статьи не найдены",
+      "withQuery": "Нет результатов для \"{query}\" — попробуйте другой запрос",
+      "noCategory": "В этой категории пока нет статей"
+    },
+    "showing": "Показано {count} из {total} статей",
+    "dates": {
+      "justNow": "Только что",
+      "hoursAgo": "{n}ч назад",
+      "yesterday": "Вчера",
+      "daysAgo": "{n}д назад"
+    }
+  }
+}

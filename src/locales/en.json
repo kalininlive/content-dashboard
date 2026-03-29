@@ -1,0 +1,250 @@
+{
+  "common": {
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "allPlatforms": "All platforms",
+    "noDateSet": "No date set"
+  },
+  "sidebar": {
+    "appName": "ContentDash",
+    "footer": "Content Dashboard v0.1",
+    "nav": {
+      "overview": "Overview",
+      "instagram": "Instagram",
+      "analytics": "Analytics",
+      "calendar": "Calendar",
+      "competitors": "Competitors",
+      "news": "News"
+    }
+  },
+  "dashboard": {
+    "title": "Overview",
+    "subtitle": "Welcome to your content dashboard. Select a module to get started.",
+    "modules": {
+      "instagram": {
+        "title": "Instagram Manager",
+        "description": "Manage posts, stories, and scheduling",
+        "stat": "0 posts"
+      },
+      "analytics": {
+        "title": "Analytics",
+        "description": "Track reach, engagement, and growth",
+        "stat": "No data yet"
+      },
+      "calendar": {
+        "title": "Content Calendar",
+        "description": "Plan and visualize your publishing schedule",
+        "stat": "0 scheduled"
+      },
+      "competitors": {
+        "title": "Competitors",
+        "description": "Monitor competitor accounts and benchmarks",
+        "stat": "0 tracked"
+      },
+      "news": {
+        "title": "News Feed",
+        "description": "Stay updated with industry news",
+        "stat": "0 articles"
+      }
+    }
+  },
+  "instagram": {
+    "title": "Instagram Manager",
+    "subtitle": "Plan, schedule, and track your content pipeline",
+    "newPost": "New Post",
+    "addIdea": "Add Idea",
+    "stats": {
+      "ideas": "Ideas",
+      "drafts": "Drafts",
+      "scheduled": "Scheduled",
+      "published": "Published"
+    },
+    "tabs": {
+      "idea": "Backlog",
+      "draft": "Drafts",
+      "scheduled": "Scheduled",
+      "published": "Published"
+    },
+    "empty": {
+      "idea": {
+        "title": "No ideas yet",
+        "desc": "Capture post ideas before they slip away."
+      },
+      "draft": {
+        "title": "No drafts",
+        "desc": "Move backlog ideas here when you start working on them."
+      },
+      "scheduled": {
+        "title": "Nothing scheduled",
+        "desc": "Schedule drafts with a publish date and time."
+      },
+      "published": {
+        "title": "Nothing published yet",
+        "desc": "Published posts will appear here."
+      }
+    },
+    "postTypes": {
+      "image": "Image",
+      "carousel": "Carousel",
+      "reel": "Reel",
+      "story": "Story"
+    },
+    "statuses": {
+      "idea": "Idea",
+      "draft": "Draft",
+      "scheduled": "Scheduled",
+      "published": "Published"
+    },
+    "actions": {
+      "moveToDraft": "Move to Draft",
+      "schedule": "Schedule",
+      "markPublished": "Mark Published"
+    }
+  },
+  "createPost": {
+    "title": "New Post Idea",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "What's the post about? Describe the content, tone, and key message.",
+    "postTypeLabel": "Post Type",
+    "statusLabel": "Status",
+    "publishDateLabel": "Publish Date",
+    "createButton": "Create Post"
+  },
+  "analytics": {
+    "title": "Analytics",
+    "badge": "Metricool",
+    "subtitle": "Content performance overview",
+    "vsPrevPeriod": "vs prev. period",
+    "kpis": {
+      "totalImpressions": "Total Impressions",
+      "totalImpressionsSub": "{value} in selected period",
+      "avgEngagementRate": "Avg Engagement Rate",
+      "avgEngagementRateSub": "Likes + comments + saves / reach",
+      "totalFollowers": "Total Followers",
+      "totalFollowersSub": "Instagram account total",
+      "newFollowers": "New Followers",
+      "newFollowersSub": "Gained in selected period"
+    },
+    "charts": {
+      "impressionsReach": "Impressions & Reach",
+      "impressionsReachSub": "Daily view counts over time",
+      "engagementRate": "Engagement Rate",
+      "engagementRateSub": "% of reached audience",
+      "followerGrowth": "Follower Growth",
+      "followerGrowthSub": "New followers gained per day"
+    },
+    "topPosts": "Top Posts",
+    "topPostsSub": "Best performing content by impressions",
+    "postTypes": {
+      "image": "Image",
+      "carousel": "Carousel",
+      "reel": "Reel",
+      "story": "Story"
+    }
+  },
+  "calendar": {
+    "title": "Content Calendar",
+    "subtitle": "Plan and schedule your multi-platform content",
+    "todayButton": "Today",
+    "allPlatforms": "All platforms",
+    "months": [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ],
+    "days": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+    "statuses": {
+      "published": "Published",
+      "scheduled": "Scheduled",
+      "draft": "Draft"
+    },
+    "legend": {
+      "published": "Published",
+      "scheduled": "Scheduled",
+      "clickHint": "Click a day to view details"
+    },
+    "detail": {
+      "noContent": "No content scheduled for this day.",
+      "addPost": "Add Post"
+    }
+  },
+  "competitors": {
+    "title": "Competitors",
+    "subtitle": "Track and benchmark competitor accounts across platforms",
+    "addCompetitor": "Add Competitor",
+    "allPlatforms": "All platforms",
+    "stats": {
+      "tracked": "Tracked",
+      "avgEngagement": "Avg Engagement",
+      "mostActive": "Most Active",
+      "platforms": "Platforms"
+    },
+    "table": {
+      "competitor": "Competitor",
+      "platform": "Platform",
+      "followers": "Followers",
+      "engagement": "Engagement",
+      "postsPerWeek": "Posts/Wk",
+      "lastPost": "Last Post",
+      "trend30d": "30d Trend",
+      "growth30d": "+30d Growth",
+      "noMatch": "No competitors match the current filter.",
+      "clickHint": "Click a row to view details"
+    },
+    "detail": {
+      "last30Days": "last 30 days",
+      "followerGrowthChart": "Follower growth — last 30 days",
+      "keyMetrics": "Key metrics",
+      "metrics": {
+        "followers": "Followers",
+        "engagement": "Engagement",
+        "postsPerWeek": "Posts / week",
+        "totalPosts": "Total posts",
+        "lastPost": "Last post"
+      },
+      "recentPosts": "Recent posts",
+      "postTable": {
+        "content": "Content",
+        "type": "Type",
+        "date": "Date",
+        "likes": "Likes",
+        "comments": "Comments",
+        "engRate": "Eng. Rate"
+      }
+    }
+  },
+  "addCompetitor": {
+    "title": "Add Competitor",
+    "nameLabel": "Display name",
+    "namePlaceholder": "e.g. Buffer",
+    "handleLabel": "Handle / username",
+    "handlePlaceholder": "username",
+    "platformLabel": "Platform",
+    "demoNote": "Demo data will be generated for this competitor.",
+    "addButton": "Add Competitor"
+  },
+  "news": {
+    "title": "News Feed",
+    "subtitle": "Instagram & social media marketing — latest updates",
+    "updatedAt": "Updated {time}",
+    "searchPlaceholder": "Search articles, sources…",
+    "allSources": "All Sources",
+    "categories": {
+      "all": "All",
+      "tools": "Tools",
+      "research": "Research",
+      "business": "Business"
+    },
+    "empty": {
+      "title": "No articles found",
+      "withQuery": "No results for \"{query}\" — try a different search term",
+      "noCategory": "No articles in this category yet"
+    },
+    "showing": "Showing {count} of {total} articles",
+    "dates": {
+      "justNow": "Just now",
+      "hoursAgo": "{n}h ago",
+      "yesterday": "Yesterday",
+      "daysAgo": "{n}d ago"
+    }
+  }
+}

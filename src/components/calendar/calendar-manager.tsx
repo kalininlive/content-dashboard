@@ -25,15 +25,11 @@ import {
   getPostsByDate,
 } from "@/lib/calendar-mock-data";
 import { CalendarPost, CalendarStatus, Platform } from "@/types/index";
+import { useI18n } from "@/lib/i18n";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const TODAY = "2026-03-29";
-const DOW_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const MONTH_LABELS = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
-];
 const MAX_CHIPS_PER_CELL = 2;
 
 // ─── Platform icon map ────────────────────────────────────────────────────────
@@ -50,39 +46,33 @@ const PLATFORM_ICON: Record<Platform, React.ElementType> = {
 
 interface CalendarCell {
   day: number;
-  date: string;       // "YYYY-MM-DD"
+  date: string;
   isCurrentMonth: boolean;
 }
 
 function buildGrid(year: number, month: number): CalendarCell[] {
-  const firstDow      = new Date(year, month, 1).getDay();
-  const daysInMonth   = new Date(year, month + 1, 0).getDate();
-  const prevDays      = new Date(year, month, 0).getDate();
+  const firstDow    = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const prevDays    = new Date(year, month, 0).getDate();
 
   const fmt = (y: number, m: number, d: number) =>
     `${y}-${String(m + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
 
   const cells: CalendarCell[] = [];
 
-  // Leading days from previous month
   for (let i = firstDow - 1; i >= 0; i--) {
     const d = prevDays - i;
     const [pm, py] = month === 0 ? [11, year - 1] : [month - 1, year];
     cells.push({ day: d, date: fmt(py, pm, d), isCurrentMonth: false });
   }
-
-  // Current month
   for (let d = 1; d <= daysInMonth; d++) {
     cells.push({ day: d, date: fmt(year, month, d), isCurrentMonth: true });
   }
-
-  // Trailing days to fill 42 cells (6 rows)
   const remaining = 42 - cells.length;
   for (let d = 1; d <= remaining; d++) {
     const [nm, ny] = month === 11 ? [0, year + 1] : [month + 1, year];
     cells.push({ day: d, date: fmt(ny, nm, d), isCurrentMonth: false });
   }
-
   return cells;
 }
 
@@ -97,11 +87,12 @@ function ContentChip({
   compact?: boolean;
   onClick?: () => void;
 }) {
-  const meta   = PLATFORM_META[post.platform];
+  const meta = PLATFORM_META[post.platform];
   const isScheduled = post.status === "scheduled";
 
   return (
     <button
+      type="button"
       onClick={onClick}
       title={`${post.title} — ${post.time}`}
       className={cn(
@@ -127,16 +118,17 @@ function ContentChip({
 // ─── Status badge (detail panel) ─────────────────────────────────────────────
 
 function StatusPill({ status }: { status: CalendarStatus }) {
-  const config: Record<CalendarStatus, { label: string; className: string; icon: React.ElementType }> = {
-    published: { label: "Published", className: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30", icon: CheckCircle2 },
-    scheduled: { label: "Scheduled", className: "bg-blue-500/15 text-blue-400 border-blue-500/30",         icon: Clock        },
-    draft:     { label: "Draft",     className: "bg-amber-500/15 text-amber-400 border-amber-500/30",      icon: Clock        },
+  const { t } = useI18n();
+  const config: Record<CalendarStatus, { className: string; icon: React.ElementType }> = {
+    published: { className: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30", icon: CheckCircle2 },
+    scheduled: { className: "bg-blue-500/15 text-blue-400 border-blue-500/30",         icon: Clock        },
+    draft:     { className: "bg-amber-500/15 text-amber-400 border-amber-500/30",      icon: Clock        },
   };
-  const { label, className, icon: Icon } = config[status];
+  const { className, icon: Icon } = config[status];
   return (
     <span className={cn("inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-[10px] font-medium", className)}>
       <Icon className="h-2.5 w-2.5" />
-      {label}
+      {t(`calendar.statuses.${status}`)}
     </span>
   );
 }
@@ -170,7 +162,6 @@ function DayCell({
         isSelected && "border-border/60 bg-muted/30 ring-1 ring-border/40",
       )}
     >
-      {/* Day number */}
       <div className="flex items-center justify-between">
         <span
           className={cn(
@@ -189,7 +180,6 @@ function DayCell({
         )}
       </div>
 
-      {/* Chips */}
       <div className="flex flex-col gap-0.5">
         {visible.map((post) => (
           <ContentChip
@@ -223,6 +213,7 @@ function DayDetailPanel({
   posts: CalendarPost[];
   onClose: () => void;
 }) {
+  const { t } = useI18n();
   const [y, m, d] = date.split("-").map(Number);
   const label = new Date(y, m - 1, d).toLocaleDateString("en-US", {
     weekday: "long",
@@ -248,10 +239,10 @@ function DayDetailPanel({
 
       {posts.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-10 text-center">
-          <p className="text-sm text-muted-foreground">No content scheduled for this day.</p>
+          <p className="text-sm text-muted-foreground">{t("calendar.detail.noContent")}</p>
           <Button size="sm" variant="outline" className="mt-3 gap-2">
             <Plus className="h-3.5 w-3.5" />
-            Add Post
+            {t("calendar.detail.addPost")}
           </Button>
         </div>
       ) : (
@@ -261,7 +252,6 @@ function DayDetailPanel({
             const Icon = PLATFORM_ICON[post.platform];
             return (
               <div key={post.id} className="flex items-start gap-3 px-4 py-3">
-                {/* Platform icon */}
                 <div
                   className={cn(
                     "mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-md border",
@@ -271,8 +261,6 @@ function DayDetailPanel({
                 >
                   <Icon className="h-3.5 w-3.5" />
                 </div>
-
-                {/* Content */}
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium leading-snug">{post.title}</p>
                   {post.description && (
@@ -308,8 +296,9 @@ function DayDetailPanel({
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export function CalendarManager() {
+  const { t } = useI18n();
   const [year, setYear]               = useState(2026);
-  const [month, setMonth]             = useState(2); // March
+  const [month, setMonth]             = useState(2);
   const [activeFilters, setFilters]   = useState<Set<Platform>>(new Set());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const detailRef = useRef<HTMLDivElement>(null);
@@ -335,7 +324,6 @@ export function CalendarManager() {
     setYear(2026); setMonth(2); setSelectedDate(TODAY);
     setTimeout(() => detailRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }), 50);
   }
-
   function toggleFilter(platform: Platform) {
     setFilters((prev) => {
       const next = new Set(prev);
@@ -344,13 +332,20 @@ export function CalendarManager() {
       return next;
     });
   }
-
   function handleSelectDate(date: string) {
     setSelectedDate((prev) => (prev === date ? null : date));
     setTimeout(() => detailRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }), 50);
   }
 
   const selectedPosts = selectedDate ? getPostsByDate(filteredPosts, selectedDate) : [];
+
+  // Translated month array from JSON
+  let monthLabels: string[];
+  try {
+    monthLabels = JSON.parse(t("calendar.months")) as string[];
+  } catch {
+    monthLabels = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  }
 
   return (
     <div className="p-8">
@@ -361,24 +356,21 @@ export function CalendarManager() {
             <CalendarDays className="h-5 w-5 text-muted-foreground" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold">Content Calendar</h1>
-            <p className="text-sm text-muted-foreground">
-              Plan and schedule your multi-platform content
-            </p>
+            <h1 className="text-2xl font-bold">{t("calendar.title")}</h1>
+            <p className="text-sm text-muted-foreground">{t("calendar.subtitle")}</p>
           </div>
         </div>
 
-        {/* Month navigation */}
         <div className="flex items-center gap-2">
           <Button size="sm" variant="outline" className="h-8 text-xs" onClick={goToday}>
-            Today
+            {t("calendar.todayButton")}
           </Button>
           <div className="flex items-center gap-1 rounded-lg border border-border/40 bg-muted/20 p-1">
             <Button variant="ghost" size="icon" className="h-7 w-7" onClick={goBack}>
               <ChevronLeft className="h-4 w-4" />
             </Button>
             <span className="min-w-[120px] text-center text-sm font-medium">
-              {MONTH_LABELS[month]} {year}
+              {monthLabels[month]} {year}
             </span>
             <Button variant="ghost" size="icon" className="h-7 w-7" onClick={goForward}>
               <ChevronRight className="h-4 w-4" />
@@ -389,8 +381,8 @@ export function CalendarManager() {
 
       {/* ── Platform filters ─────────────────────────────────────────────── */}
       <div className="mb-5 flex flex-wrap items-center gap-2">
-        {/* All */}
         <button
+          type="button"
           onClick={() => setFilters(new Set())}
           className={cn(
             "rounded-full border px-3 py-1 text-xs font-medium transition-all",
@@ -399,10 +391,9 @@ export function CalendarManager() {
               : "border-border/40 text-muted-foreground hover:border-border hover:text-foreground"
           )}
         >
-          All platforms
+          {t("calendar.allPlatforms")}
         </button>
 
-        {/* Per-platform */}
         {ALL_PLATFORMS.map((platform) => {
           const meta   = PLATFORM_META[platform];
           const Icon   = PLATFORM_ICON[platform];
@@ -413,6 +404,7 @@ export function CalendarManager() {
           return (
             <button
               key={platform}
+              type="button"
               onClick={() => toggleFilter(platform)}
               className={cn(
                 "flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-all",
@@ -421,9 +413,7 @@ export function CalendarManager() {
             >
               <Icon className="h-3 w-3" />
               {meta.label}
-              {count > 0 && (
-                <span className="tabular-nums opacity-70">({count})</span>
-              )}
+              {count > 0 && <span className="tabular-nums opacity-70">({count})</span>}
             </button>
           );
         })}
@@ -432,22 +422,10 @@ export function CalendarManager() {
       {/* ── Calendar grid ────────────────────────────────────────────────── */}
       <Card className="border-border/30">
         <CardContent className="p-3">
-          {/* Day-of-week headers */}
-          <div className="mb-1 grid grid-cols-7 gap-1">
-            {DOW_LABELS.map((d, i) => (
-              <div
-                key={d}
-                className={cn(
-                  "py-2 text-center text-[11px] font-medium text-muted-foreground",
-                  (i === 0 || i === 6) && "text-muted-foreground/50"
-                )}
-              >
-                {d}
-              </div>
-            ))}
-          </div>
+          {/* Day-of-week headers — resolved from JSON array */}
+          <DayOfWeekHeaders />
 
-          {/* Day cells — 6 rows × 7 */}
+          {/* Day cells */}
           <div className="grid grid-cols-7 gap-1">
             {grid.map((cell) => {
               const posts = getPostsByDate(filteredPosts, cell.date);
@@ -470,14 +448,14 @@ export function CalendarManager() {
       <div className="mt-3 flex flex-wrap items-center gap-4 px-1">
         <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground/60">
           <span className="inline-block h-2.5 w-7 rounded border border-muted-foreground/30 bg-muted-foreground/10" />
-          Published
+          {t("calendar.legend.published")}
         </div>
         <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground/60">
           <span className="inline-block h-2.5 w-7 rounded border border-dashed border-muted-foreground/30 bg-muted-foreground/10" />
-          Scheduled
+          {t("calendar.legend.scheduled")}
         </div>
         <div className="ml-auto flex items-center gap-1 text-[11px] text-muted-foreground/50">
-          <span>Click a day to view details</span>
+          <span>{t("calendar.legend.clickHint")}</span>
         </div>
       </div>
 
@@ -491,6 +469,36 @@ export function CalendarManager() {
           />
         )}
       </div>
+    </div>
+  );
+}
+
+// ─── Day-of-week headers sub-component ───────────────────────────────────────
+
+function DayOfWeekHeaders() {
+  const { t } = useI18n();
+  // The JSON stores an array; t() returns it as a JSON string since resolve returns string
+  // We store them as a plain array key in JSON, so parse it safely:
+  let days: string[];
+  try {
+    days = JSON.parse(t("calendar.days")) as string[];
+  } catch {
+    days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  }
+
+  return (
+    <div className="mb-1 grid grid-cols-7 gap-1">
+      {days.map((d, i) => (
+        <div
+          key={d}
+          className={cn(
+            "py-2 text-center text-[11px] font-medium text-muted-foreground",
+            (i === 0 || i === 6) && "text-muted-foreground/50"
+          )}
+        >
+          {d}
+        </div>
+      ))}
     </div>
   );
 }

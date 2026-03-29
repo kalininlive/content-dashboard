@@ -16,26 +16,21 @@ import { CreatePostDialog } from "./create-post-dialog";
 import { PostCard } from "./post-card";
 import { InstagramPost, PostStatus } from "@/types/index";
 import { mockPosts } from "@/lib/mock-data";
+import { useI18n } from "@/lib/i18n";
 
-// ─── Helpers ────────────────────────────────────────────────────────────────
+// ─── Static tab config (icons only — labels come from t()) ───────────────────
 
-const TABS: { value: PostStatus; label: string; icon: React.ElementType }[] = [
-  { value: "idea",      label: "Backlog",   icon: Lightbulb     },
-  { value: "draft",     label: "Drafts",    icon: FileText      },
-  { value: "scheduled", label: "Scheduled", icon: CalendarClock },
-  { value: "published", label: "Published", icon: CheckCircle2  },
+const TABS: { value: PostStatus; icon: React.ElementType }[] = [
+  { value: "idea",      icon: Lightbulb     },
+  { value: "draft",     icon: FileText      },
+  { value: "scheduled", icon: CalendarClock },
+  { value: "published", icon: CheckCircle2  },
 ];
-
-const EMPTY_COPY: Record<PostStatus, { title: string; desc: string }> = {
-  idea:      { title: "No ideas yet",         desc: "Capture post ideas before they slip away."               },
-  draft:     { title: "No drafts",            desc: "Move backlog ideas here when you start working on them." },
-  scheduled: { title: "Nothing scheduled",    desc: "Schedule drafts with a publish date and time."           },
-  published: { title: "Nothing published yet", desc: "Published posts will appear here."                       },
-};
 
 // ─── Component ──────────────────────────────────────────────────────────────
 
 export function InstagramManager() {
+  const { t } = useI18n();
   const [posts, setPosts] = useState<InstagramPost[]>(mockPosts);
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -60,11 +55,11 @@ export function InstagramManager() {
     );
   }
 
-  const stats = [
-    { label: "Ideas",     value: byStatus("idea").length,      icon: Lightbulb     },
-    { label: "Drafts",    value: byStatus("draft").length,     icon: FileText      },
-    { label: "Scheduled", value: byStatus("scheduled").length, icon: CalendarClock },
-    { label: "Published", value: byStatus("published").length, icon: CheckCircle2  },
+  const stats: { labelKey: string; value: number; icon: React.ElementType }[] = [
+    { labelKey: "instagram.stats.ideas",     value: byStatus("idea").length,      icon: Lightbulb     },
+    { labelKey: "instagram.stats.drafts",    value: byStatus("draft").length,     icon: FileText      },
+    { labelKey: "instagram.stats.scheduled", value: byStatus("scheduled").length, icon: CalendarClock },
+    { labelKey: "instagram.stats.published", value: byStatus("published").length, icon: CheckCircle2  },
   ];
 
   return (
@@ -76,25 +71,23 @@ export function InstagramManager() {
             <Instagram className="h-5 w-5 text-muted-foreground" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold">Instagram Manager</h1>
-            <p className="text-sm text-muted-foreground">
-              Plan, schedule, and track your content pipeline
-            </p>
+            <h1 className="text-2xl font-bold">{t("instagram.title")}</h1>
+            <p className="text-sm text-muted-foreground">{t("instagram.subtitle")}</p>
           </div>
         </div>
         <Button size="sm" className="gap-2" onClick={() => setDialogOpen(true)}>
           <Plus className="h-4 w-4" />
-          New Post
+          {t("instagram.newPost")}
         </Button>
       </div>
 
       {/* ── Stats ──────────────────────────────────────────────────────── */}
       <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
-        {stats.map(({ label, value, icon: Icon }) => (
-          <Card key={label}>
+        {stats.map(({ labelKey, value, icon: Icon }) => (
+          <Card key={labelKey}>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-xs font-medium text-muted-foreground">
-                {label}
+                {t(labelKey)}
               </CardTitle>
               <Icon className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
@@ -108,10 +101,10 @@ export function InstagramManager() {
       {/* ── Tabs ───────────────────────────────────────────────────────── */}
       <Tabs defaultValue="idea">
         <TabsList className="mb-6 h-9">
-          {TABS.map(({ value, label, icon: Icon }) => (
+          {TABS.map(({ value, icon: Icon }) => (
             <TabsTrigger key={value} value={value} className="gap-1.5 text-xs">
               <Icon className="h-3.5 w-3.5" />
-              {label}
+              {t(`instagram.tabs.${value}`)}
               <span className="ml-0.5 tabular-nums text-muted-foreground">
                 ({byStatus(value).length})
               </span>
@@ -164,19 +157,19 @@ function EmptyTabState({
   status: PostStatus;
   onNew: () => void;
 }) {
-  const { title, desc } = EMPTY_COPY[status];
+  const { t } = useI18n();
   return (
     <Card className="border-dashed border-border/40">
       <CardContent className="flex flex-col items-center justify-center py-16 text-center">
         <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
           <Instagram className="h-5 w-5 text-muted-foreground" />
         </div>
-        <h3 className="mb-1 text-sm font-medium">{title}</h3>
-        <p className="mb-5 max-w-xs text-xs text-muted-foreground">{desc}</p>
+        <h3 className="mb-1 text-sm font-medium">{t(`instagram.empty.${status}.title`)}</h3>
+        <p className="mb-5 max-w-xs text-xs text-muted-foreground">{t(`instagram.empty.${status}.desc`)}</p>
         {status === "idea" && (
           <Button size="sm" variant="outline" className="gap-2" onClick={onNew}>
             <Plus className="h-4 w-4" />
-            Add Idea
+            {t("instagram.addIdea")}
           </Button>
         )}
       </CardContent>

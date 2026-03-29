@@ -12,21 +12,22 @@ import {
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal, Calendar, Trash2, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/lib/i18n";
 
-// ─── Label & colour maps ────────────────────────────────────────────────────
+// ─── Colour maps (no labels — labels come from t()) ──────────────────────────
 
-const STATUS_META: Record<PostStatus, { label: string; className: string }> = {
-  idea:      { label: "Idea",      className: "bg-zinc-800 text-zinc-400 border border-zinc-700" },
-  draft:     { label: "Draft",     className: "bg-amber-950/60 text-amber-400 border border-amber-900/60" },
-  scheduled: { label: "Scheduled", className: "bg-blue-950/60 text-blue-400 border border-blue-900/60" },
-  published: { label: "Published", className: "bg-emerald-950/60 text-emerald-400 border border-emerald-900/60" },
+const STATUS_CLASS: Record<PostStatus, string> = {
+  idea:      "bg-zinc-800 text-zinc-400 border border-zinc-700",
+  draft:     "bg-amber-950/60 text-amber-400 border border-amber-900/60",
+  scheduled: "bg-blue-950/60 text-blue-400 border border-blue-900/60",
+  published: "bg-emerald-950/60 text-emerald-400 border border-emerald-900/60",
 };
 
-const TYPE_META: Record<PostType, { label: string; className: string }> = {
-  image:    { label: "Image",    className: "bg-purple-950/60 text-purple-400 border border-purple-900/60" },
-  carousel: { label: "Carousel", className: "bg-cyan-950/60 text-cyan-400 border border-cyan-900/60" },
-  reel:     { label: "Reel",     className: "bg-pink-950/60 text-pink-400 border border-pink-900/60" },
-  story:    { label: "Story",    className: "bg-orange-950/60 text-orange-400 border border-orange-900/60" },
+const TYPE_CLASS: Record<PostType, string> = {
+  image:    "bg-purple-950/60 text-purple-400 border border-purple-900/60",
+  carousel: "bg-cyan-950/60 text-cyan-400 border border-cyan-900/60",
+  reel:     "bg-pink-950/60 text-pink-400 border border-pink-900/60",
+  story:    "bg-orange-950/60 text-orange-400 border border-orange-900/60",
 };
 
 const NEXT_STATUS: Record<PostStatus, PostStatus | null> = {
@@ -36,10 +37,10 @@ const NEXT_STATUS: Record<PostStatus, PostStatus | null> = {
   published: null,
 };
 
-const NEXT_LABEL: Record<PostStatus, string | null> = {
-  idea:      "Move to Draft",
-  draft:     "Schedule",
-  scheduled: "Mark Published",
+const NEXT_ACTION_KEY: Record<PostStatus, string | null> = {
+  idea:      "instagram.actions.moveToDraft",
+  draft:     "instagram.actions.schedule",
+  scheduled: "instagram.actions.markPublished",
   published: null,
 };
 
@@ -52,10 +53,9 @@ interface PostCardProps {
 }
 
 export function PostCard({ post, onDelete, onStatusChange }: PostCardProps) {
-  const statusMeta = STATUS_META[post.status];
-  const typeMeta   = TYPE_META[post.postType];
-  const next       = NEXT_STATUS[post.status];
-  const nextLabel  = NEXT_LABEL[post.status];
+  const { t } = useI18n();
+  const next        = NEXT_STATUS[post.status];
+  const nextActionKey = NEXT_ACTION_KEY[post.status];
 
   return (
     <Card className="group relative flex flex-col border-border/40 bg-card transition-all hover:border-border hover:shadow-md hover:shadow-black/20">
@@ -65,20 +65,20 @@ export function PostCard({ post, onDelete, onStatusChange }: PostCardProps) {
           <span
             className={cn(
               "inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-medium",
-              typeMeta.className
+              TYPE_CLASS[post.postType]
             )}
           >
-            {typeMeta.label}
+            {t(`instagram.postTypes.${post.postType}`)}
           </span>
 
           <div className="flex items-center gap-1.5">
             <span
               className={cn(
                 "inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-medium",
-                statusMeta.className
+                STATUS_CLASS[post.status]
               )}
             >
-              {statusMeta.label}
+              {t(`instagram.statuses.${post.status}`)}
             </span>
 
             <DropdownMenu>
@@ -92,14 +92,14 @@ export function PostCard({ post, onDelete, onStatusChange }: PostCardProps) {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-44">
-                {next && nextLabel && (
+                {next && nextActionKey && (
                   <>
                     <DropdownMenuItem
                       className="gap-2 text-xs"
                       onClick={() => onStatusChange(post.id, next)}
                     >
                       <ArrowRight className="h-3.5 w-3.5" />
-                      {nextLabel}
+                      {t(nextActionKey)}
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                   </>
@@ -109,7 +109,7 @@ export function PostCard({ post, onDelete, onStatusChange }: PostCardProps) {
                   onClick={() => onDelete(post.id)}
                 >
                   <Trash2 className="h-3.5 w-3.5" />
-                  Delete
+                  {t("common.delete")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -130,7 +130,7 @@ export function PostCard({ post, onDelete, onStatusChange }: PostCardProps) {
                 day: "numeric",
                 year: "numeric",
               })
-            : "No date set"}
+            : t("common.noDateSet")}
         </div>
       </CardContent>
     </Card>

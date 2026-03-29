@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/select";
 import { Platform } from "@/types/index";
 import { PLATFORM_META } from "@/lib/calendar-mock-data";
+import { useI18n } from "@/lib/i18n";
 
 interface AddCompetitorDialogProps {
   open: boolean;
@@ -34,6 +35,7 @@ export function AddCompetitorDialog({
   onOpenChange,
   onAdd,
 }: AddCompetitorDialogProps) {
+  const { t } = useI18n();
   const [form, setForm] = useState(DEFAULT);
 
   function handleSubmit(e: React.FormEvent) {
@@ -53,18 +55,18 @@ export function AddCompetitorDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[400px]">
         <DialogHeader>
-          <DialogTitle className="text-base">Add Competitor</DialogTitle>
+          <DialogTitle className="text-base">{t("addCompetitor.title")}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4 pt-1">
           {/* Name */}
           <div className="space-y-1.5">
             <Label htmlFor="comp-name" className="text-xs text-muted-foreground">
-              Display name
+              {t("addCompetitor.nameLabel")}
             </Label>
             <Input
               id="comp-name"
-              placeholder="e.g. Buffer"
+              placeholder={t("addCompetitor.namePlaceholder")}
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               className="text-sm"
@@ -75,7 +77,7 @@ export function AddCompetitorDialog({
           {/* Handle */}
           <div className="space-y-1.5">
             <Label htmlFor="comp-handle" className="text-xs text-muted-foreground">
-              Handle / username
+              {t("addCompetitor.handleLabel")}
             </Label>
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
@@ -83,7 +85,7 @@ export function AddCompetitorDialog({
               </span>
               <Input
                 id="comp-handle"
-                placeholder="username"
+                placeholder={t("addCompetitor.handlePlaceholder")}
                 value={form.handle.replace(/^@/, "")}
                 onChange={(e) => setForm({ ...form, handle: e.target.value })}
                 className="pl-7 text-sm"
@@ -94,7 +96,7 @@ export function AddCompetitorDialog({
 
           {/* Platform */}
           <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">Platform</Label>
+            <Label className="text-xs text-muted-foreground">{t("addCompetitor.platformLabel")}</Label>
             <Select
               value={form.platform}
               onValueChange={(v) => setForm({ ...form, platform: v as Platform })}
@@ -113,19 +115,19 @@ export function AddCompetitorDialog({
           </div>
 
           <p className="text-[11px] text-muted-foreground/60">
-            Demo data will be generated for this competitor.
+            {t("addCompetitor.demoNote")}
           </p>
 
           <DialogFooter className="pt-1">
             <Button type="button" variant="ghost" size="sm" onClick={handleCancel}>
-              Cancel
+              {t("common.cancel")}
             </Button>
             <Button
               type="submit"
               size="sm"
               disabled={!form.name.trim() || !form.handle.trim()}
             >
-              Add Competitor
+              {t("addCompetitor.addButton")}
             </Button>
           </DialogFooter>
         </form>

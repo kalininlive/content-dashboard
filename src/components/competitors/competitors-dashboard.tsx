@@ -46,6 +46,7 @@ import {
 import { PLATFORM_META, ALL_PLATFORMS } from "@/lib/calendar-mock-data";
 import { AddCompetitorDialog } from "./add-competitor-dialog";
 import { Competitor, Platform } from "@/types/index";
+import { useI18n } from "@/lib/i18n";
 
 // ─── Platform icon map ────────────────────────────────────────────────────────
 
@@ -173,6 +174,7 @@ function CompetitorDetail({
   competitor: Competitor;
   onClose: () => void;
 }) {
+  const { t } = useI18n();
   const meta        = PLATFORM_META[competitor.platform];
   const PlatIcon    = PLATFORM_ICON[competitor.platform];
   const isPositive  = competitor.gainedLast30d >= 0;
@@ -185,12 +187,28 @@ function CompetitorDetail({
 
   const axisStyle = { fontSize: 10, fill: "hsl(var(--muted-foreground))" };
 
+  const detailMetrics = [
+    { icon: Users,        labelKey: "competitors.detail.metrics.followers",    value: fmtN(competitor.followers) },
+    { icon: Activity,     labelKey: "competitors.detail.metrics.engagement",   value: `${competitor.avgEngagementRate}%` },
+    { icon: CalendarDays, labelKey: "competitors.detail.metrics.postsPerWeek", value: `${competitor.postsPerWeek}×` },
+    { icon: FileText,     labelKey: "competitors.detail.metrics.totalPosts",   value: fmtN(competitor.totalPosts) },
+    { icon: BarChart2,    labelKey: "competitors.detail.metrics.lastPost",     value: daysAgo(competitor.lastPostDate) },
+  ];
+
+  const postHeaders = [
+    t("competitors.detail.postTable.content"),
+    t("competitors.detail.postTable.type"),
+    t("competitors.detail.postTable.date"),
+    t("competitors.detail.postTable.likes"),
+    t("competitors.detail.postTable.comments"),
+    t("competitors.detail.postTable.engRate"),
+  ];
+
   return (
     <Card className="mt-4 border-border/40 overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-border/30 px-5 py-4">
         <div className="flex items-center gap-3">
-          {/* Avatar */}
           <div className={cn("flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br text-sm font-bold text-white shrink-0", competitor.avatarGradient)}>
             {initials}
           </div>
@@ -204,11 +222,11 @@ function CompetitorDetail({
               </span>
             </div>
             <div className="mt-0.5 flex items-center gap-3 text-xs text-muted-foreground">
-              <span>{fmtN(competitor.followers)} followers</span>
+              <span>{fmtN(competitor.followers)} {t("competitors.detail.metrics.followers").toLowerCase()}</span>
               <span>·</span>
               <span className={cn("flex items-center gap-0.5", isPositive ? "text-emerald-400" : "text-rose-400")}>
                 {isPositive ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
-                {isPositive ? "+" : ""}{fmtN(competitor.gainedLast30d)} last 30 days
+                {isPositive ? "+" : ""}{fmtN(competitor.gainedLast30d)} {t("competitors.detail.last30Days")}
               </span>
             </div>
           </div>
@@ -219,9 +237,9 @@ function CompetitorDetail({
       </div>
 
       <div className="grid grid-cols-1 gap-0 lg:grid-cols-3">
-        {/* Growth chart — 2/3 */}
+        {/* Growth chart */}
         <div className="border-b border-border/20 p-5 lg:col-span-2 lg:border-b-0 lg:border-r">
-          <p className="mb-3 text-xs font-medium text-muted-foreground">Follower growth — last 30 days</p>
+          <p className="mb-3 text-xs font-medium text-muted-foreground">{t("competitors.detail.followerGrowthChart")}</p>
           <ChartContainer config={growthChartConfig} className="h-40 w-full">
             <AreaChart data={chartData} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
               <defs>
@@ -234,33 +252,20 @@ function CompetitorDetail({
               <XAxis dataKey="day" tick={false} axisLine={false} tickLine={false} />
               <YAxis tick={axisStyle} tickLine={false} axisLine={false} tickFormatter={fmtN} width={40} />
               <ChartTooltip content={<ChartTooltipContent formatter={(v) => fmtN(v as number)} />} />
-              <Area
-                type="monotone"
-                dataKey="followers"
-                stroke="var(--color-followers)"
-                strokeWidth={2}
-                fill="url(#detailGrad)"
-                dot={false}
-              />
+              <Area type="monotone" dataKey="followers" stroke="var(--color-followers)" strokeWidth={2} fill="url(#detailGrad)" dot={false} />
             </AreaChart>
           </ChartContainer>
         </div>
 
-        {/* Stats + freq — 1/3 */}
+        {/* Key metrics */}
         <div className="p-5">
-          <p className="mb-3 text-xs font-medium text-muted-foreground">Key metrics</p>
+          <p className="mb-3 text-xs font-medium text-muted-foreground">{t("competitors.detail.keyMetrics")}</p>
           <div className="space-y-3">
-            {[
-              { icon: Users,       label: "Followers",     value: fmtN(competitor.followers) },
-              { icon: Activity,    label: "Engagement",    value: `${competitor.avgEngagementRate}%` },
-              { icon: CalendarDays,label: "Posts / week",  value: `${competitor.postsPerWeek}×` },
-              { icon: FileText,    label: "Total posts",   value: fmtN(competitor.totalPosts) },
-              { icon: BarChart2,   label: "Last post",     value: daysAgo(competitor.lastPostDate) },
-            ].map(({ icon: Icon, label, value }) => (
-              <div key={label} className="flex items-center justify-between">
+            {detailMetrics.map(({ icon: Icon, labelKey, value }) => (
+              <div key={labelKey} className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   <Icon className="h-3.5 w-3.5" />
-                  {label}
+                  {t(labelKey)}
                 </div>
                 <span className="text-xs font-medium tabular-nums">{value}</span>
               </div>
@@ -272,13 +277,13 @@ function CompetitorDetail({
       {/* Recent posts */}
       <div className="border-t border-border/20">
         <div className="px-5 py-3">
-          <p className="text-xs font-medium text-muted-foreground">Recent posts</p>
+          <p className="text-xs font-medium text-muted-foreground">{t("competitors.detail.recentPosts")}</p>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[580px]">
             <thead>
               <tr className="border-b border-border/20">
-                {["Content", "Type", "Date", "Likes", "Comments", "Eng. Rate"].map((h) => (
+                {postHeaders.map((h) => (
                   <th key={h} className="px-4 py-2 text-left text-[10px] font-medium uppercase tracking-wide text-muted-foreground/50">
                     {h}
                   </th>
@@ -321,6 +326,7 @@ function CompetitorDetail({
 // ─── Main dashboard ───────────────────────────────────────────────────────────
 
 export function CompetitorsDashboard() {
+  const { t } = useI18n();
   const [competitors, setCompetitors]   = useState<Competitor[]>(INITIAL_COMPETITORS);
   const [sortField, setSortField]       = useState<SortField>("followers");
   const [sortDir, setSortDir]           = useState<SortDir>("desc");
@@ -329,7 +335,6 @@ export function CompetitorsDashboard() {
   const [dialogOpen, setDialogOpen]     = useState(false);
   const detailRef = useRef<HTMLDivElement>(null);
 
-  // Filtered + sorted list
   const displayed = useMemo(() => {
     const filtered = platformFilter === "all"
       ? competitors
@@ -343,23 +348,19 @@ export function CompetitorsDashboard() {
     if (sortField === field) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
     else { setSortField(field); setSortDir("desc"); }
   }
-
   function handleRowClick(id: string) {
     setSelectedId((prev) => (prev === id ? null : id));
     setTimeout(() => detailRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }), 50);
   }
-
   function handleDelete(id: string) {
     setCompetitors((prev) => prev.filter((c) => c.id !== id));
     if (selectedId === id) setSelectedId(null);
   }
-
   function handleAdd(name: string, handle: string, platform: Platform) {
     const comp = generateCompetitor(name, handle, platform);
     setCompetitors((prev) => [comp, ...prev]);
   }
 
-  // Summary stats
   const avgEng = competitors.length
     ? parseFloat((competitors.reduce((s, c) => s + c.avgEngagementRate, 0) / competitors.length).toFixed(1))
     : 0;
@@ -370,10 +371,14 @@ export function CompetitorsDashboard() {
   })();
 
   const summaryStats = [
-    { label: "Tracked",           value: String(competitors.length),                         icon: Users    },
-    { label: "Avg Engagement",    value: `${avgEng}%`,                                       icon: Activity },
-    { label: "Most Active",       value: mostActivePlatform === "—" ? "—" : PLATFORM_META[mostActivePlatform as Platform]?.label ?? "—", icon: BarChart2 },
-    { label: "Platforms",         value: String(new Set(competitors.map((c) => c.platform)).size), icon: TrendingUp },
+    { labelKey: "competitors.stats.tracked",       value: String(competitors.length),  icon: Users    },
+    { labelKey: "competitors.stats.avgEngagement",  value: `${avgEng}%`,               icon: Activity },
+    { labelKey: "competitors.stats.mostActive",
+      value: mostActivePlatform === "—" ? "—" : PLATFORM_META[mostActivePlatform as Platform]?.label ?? "—",
+      icon: BarChart2 },
+    { labelKey: "competitors.stats.platforms",
+      value: String(new Set(competitors.map((c) => c.platform)).size),
+      icon: TrendingUp },
   ];
 
   return (
@@ -385,24 +390,22 @@ export function CompetitorsDashboard() {
             <Users className="h-5 w-5 text-muted-foreground" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold">Competitors</h1>
-            <p className="text-sm text-muted-foreground">
-              Track and benchmark competitor accounts across platforms
-            </p>
+            <h1 className="text-2xl font-bold">{t("competitors.title")}</h1>
+            <p className="text-sm text-muted-foreground">{t("competitors.subtitle")}</p>
           </div>
         </div>
         <Button size="sm" className="gap-2" onClick={() => setDialogOpen(true)}>
           <Plus className="h-4 w-4" />
-          Add Competitor
+          {t("competitors.addCompetitor")}
         </Button>
       </div>
 
       {/* ── Summary stats ────────────────────────────────────────────────── */}
       <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
-        {summaryStats.map(({ label, value, icon: Icon }) => (
-          <Card key={label}>
+        {summaryStats.map(({ labelKey, value, icon: Icon }) => (
+          <Card key={labelKey}>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-xs font-medium text-muted-foreground">{label}</CardTitle>
+              <CardTitle className="text-xs font-medium text-muted-foreground">{t(labelKey)}</CardTitle>
               <Icon className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -415,6 +418,7 @@ export function CompetitorsDashboard() {
       {/* ── Platform filter ──────────────────────────────────────────────── */}
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <button
+          type="button"
           onClick={() => setPlatform("all")}
           className={cn(
             "rounded-full border px-3 py-1 text-xs font-medium transition-all",
@@ -423,7 +427,7 @@ export function CompetitorsDashboard() {
               : "border-border/40 text-muted-foreground hover:border-border hover:text-foreground"
           )}
         >
-          All platforms
+          {t("competitors.allPlatforms")}
         </button>
         {ALL_PLATFORMS.map((p) => {
           const meta = PLATFORM_META[p];
@@ -432,6 +436,7 @@ export function CompetitorsDashboard() {
           return (
             <button
               key={p}
+              type="button"
               onClick={() => setPlatform(platformFilter === p ? "all" : p)}
               className={cn(
                 "flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-all",
@@ -452,29 +457,29 @@ export function CompetitorsDashboard() {
           <table className="w-full min-w-[860px]">
             <thead>
               <tr className="border-b border-border/30 bg-muted/20">
-                <ColHeader label="Competitor"  field={null}               sortField={sortField} sortDir={sortDir} onSort={handleSort} className="min-w-[200px]" />
-                <ColHeader label="Platform"    field="platform"           sortField={sortField} sortDir={sortDir} onSort={handleSort} />
-                <ColHeader label="Followers"   field="followers"          sortField={sortField} sortDir={sortDir} onSort={handleSort} />
-                <ColHeader label="Engagement"  field="avgEngagementRate"  sortField={sortField} sortDir={sortDir} onSort={handleSort} />
-                <ColHeader label="Posts/Wk"    field="postsPerWeek"       sortField={sortField} sortDir={sortDir} onSort={handleSort} />
-                <ColHeader label="Last Post"   field="lastPostDate"       sortField={sortField} sortDir={sortDir} onSort={handleSort} />
-                <ColHeader label="30d Trend"   field={null}               sortField={sortField} sortDir={sortDir} onSort={handleSort} />
-                <ColHeader label="+30d Growth" field="gainedLast30d"      sortField={sortField} sortDir={sortDir} onSort={handleSort} />
-                <ColHeader label=""            field={null}               sortField={sortField} sortDir={sortDir} onSort={handleSort} className="w-12" />
+                <ColHeader label={t("competitors.table.competitor")}  field={null}               sortField={sortField} sortDir={sortDir} onSort={handleSort} className="min-w-[200px]" />
+                <ColHeader label={t("competitors.table.platform")}    field="platform"           sortField={sortField} sortDir={sortDir} onSort={handleSort} />
+                <ColHeader label={t("competitors.table.followers")}   field="followers"          sortField={sortField} sortDir={sortDir} onSort={handleSort} />
+                <ColHeader label={t("competitors.table.engagement")}  field="avgEngagementRate"  sortField={sortField} sortDir={sortDir} onSort={handleSort} />
+                <ColHeader label={t("competitors.table.postsPerWeek")} field="postsPerWeek"      sortField={sortField} sortDir={sortDir} onSort={handleSort} />
+                <ColHeader label={t("competitors.table.lastPost")}    field="lastPostDate"       sortField={sortField} sortDir={sortDir} onSort={handleSort} />
+                <ColHeader label={t("competitors.table.trend30d")}    field={null}               sortField={sortField} sortDir={sortDir} onSort={handleSort} />
+                <ColHeader label={t("competitors.table.growth30d")}   field="gainedLast30d"      sortField={sortField} sortDir={sortDir} onSort={handleSort} />
+                <ColHeader label=""                                    field={null}               sortField={sortField} sortDir={sortDir} onSort={handleSort} className="w-12" />
               </tr>
             </thead>
             <tbody>
               {displayed.length === 0 ? (
                 <tr>
                   <td colSpan={9} className="py-16 text-center text-sm text-muted-foreground">
-                    No competitors match the current filter.
+                    {t("competitors.table.noMatch")}
                   </td>
                 </tr>
               ) : (
                 displayed.map((comp) => {
-                  const meta    = PLATFORM_META[comp.platform];
-                  const PIcon   = PLATFORM_ICON[comp.platform];
-                  const isPos   = comp.gainedLast30d >= 0;
+                  const meta     = PLATFORM_META[comp.platform];
+                  const PIcon    = PLATFORM_ICON[comp.platform];
+                  const isPos    = comp.gainedLast30d >= 0;
                   const initials = comp.name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
                   const isSelected = comp.id === selectedId;
 
@@ -487,7 +492,6 @@ export function CompetitorsDashboard() {
                         isSelected ? "bg-muted/30" : "hover:bg-muted/15"
                       )}
                     >
-                      {/* Competitor */}
                       <td className="px-3 py-3">
                         <div className="flex items-center gap-2.5">
                           <div className={cn("flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br text-[10px] font-bold text-white", comp.avatarGradient)}>
@@ -499,21 +503,13 @@ export function CompetitorsDashboard() {
                           </div>
                         </div>
                       </td>
-
-                      {/* Platform */}
                       <td className="px-3 py-3">
                         <span className={cn("inline-flex items-center gap-1.5 rounded-md border px-2 py-0.5 text-[10px] font-medium", meta.chipBg, meta.chipBorder)}>
                           <PIcon className="h-2.5 w-2.5" />
                           {meta.shortLabel}
                         </span>
                       </td>
-
-                      {/* Followers */}
-                      <td className="px-3 py-3 text-xs tabular-nums font-medium">
-                        {fmtN(comp.followers)}
-                      </td>
-
-                      {/* Engagement rate */}
+                      <td className="px-3 py-3 text-xs tabular-nums font-medium">{fmtN(comp.followers)}</td>
                       <td className="px-3 py-3">
                         <span className={cn(
                           "text-xs font-medium tabular-nums",
@@ -523,31 +519,17 @@ export function CompetitorsDashboard() {
                           {comp.avgEngagementRate}%
                         </span>
                       </td>
-
-                      {/* Posts/week */}
-                      <td className="px-3 py-3 text-xs tabular-nums text-foreground/70">
-                        {comp.postsPerWeek}×
-                      </td>
-
-                      {/* Last post */}
-                      <td className="px-3 py-3 text-xs text-muted-foreground">
-                        {daysAgo(comp.lastPostDate)}
-                      </td>
-
-                      {/* Sparkline */}
+                      <td className="px-3 py-3 text-xs tabular-nums text-foreground/70">{comp.postsPerWeek}×</td>
+                      <td className="px-3 py-3 text-xs text-muted-foreground">{daysAgo(comp.lastPostDate)}</td>
                       <td className="px-3 py-3">
                         <SparkLine data={comp.growth30d} gain={comp.gainedLast30d} />
                       </td>
-
-                      {/* +30d growth */}
                       <td className="px-3 py-3">
                         <span className={cn("flex items-center gap-1 text-xs font-medium tabular-nums", isPos ? "text-emerald-400" : "text-rose-400")}>
                           {isPos ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
                           {isPos ? "+" : ""}{fmtN(comp.gainedLast30d)}
                         </span>
                       </td>
-
-                      {/* Delete */}
                       <td className="px-3 py-3">
                         <Button
                           variant="ghost"
@@ -569,9 +551,9 @@ export function CompetitorsDashboard() {
         {/* Table footer */}
         <div className="border-t border-border/20 px-4 py-2.5">
           <p className="text-[11px] text-muted-foreground/50">
-            {displayed.length} competitor{displayed.length !== 1 ? "s" : ""} shown
+            {displayed.length} {displayed.length !== 1 ? t("competitors.table.competitor").toLowerCase() + "s" : t("competitors.table.competitor").toLowerCase()} shown
             {platformFilter !== "all" && ` · filtered by ${PLATFORM_META[platformFilter as Platform].label}`}
-            {" · Click a row to view details"}
+            {" · "}{t("competitors.table.clickHint")}
           </p>
         </div>
       </Card>

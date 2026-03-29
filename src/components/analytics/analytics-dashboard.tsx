@@ -42,6 +42,7 @@ import {
   TOP_POSTS,
 } from "@/lib/analytics-mock-data";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/lib/i18n";
 
 // ─── Chart configs ─────────────────────────────────────────────────────────
 
@@ -66,7 +67,7 @@ const RANGES: { value: DateRange; label: string }[] = [
   { value: "90d", label: "90D" },
 ];
 
-// ─── Tick sampler — keeps the axis readable regardless of range ────────────
+// ─── Tick sampler ─────────────────────────────────────────────────────────
 
 function sampleTicks(data: { date: string }[], maxTicks: number): string[] {
   if (data.length <= maxTicks) return data.map((d) => d.date);
@@ -82,9 +83,10 @@ interface KpiCardProps {
   delta: number;
   icon: React.ElementType;
   sub: string;
+  vsPrevLabel: string;
 }
 
-function KpiCard({ label, value, delta, icon: Icon, sub }: KpiCardProps) {
+function KpiCard({ label, value, delta, icon: Icon, sub, vsPrevLabel }: KpiCardProps) {
   const isPositive = delta > 0;
   const isNeutral  = delta === 0;
   const DeltaIcon  = isNeutral ? Minus : isPositive ? TrendingUp : TrendingDown;
@@ -109,7 +111,7 @@ function KpiCard({ label, value, delta, icon: Icon, sub }: KpiCardProps) {
         >
           <DeltaIcon className="h-3 w-3" />
           <span>
-            {isNeutral ? "—" : `${isPositive ? "+" : ""}${delta}%`} vs prev. period
+            {isNeutral ? "—" : `${isPositive ? "+" : ""}${delta}%`} {vsPrevLabel}
           </span>
         </div>
         <p className="mt-1 text-[11px] text-muted-foreground/60">{sub}</p>
@@ -121,19 +123,16 @@ function KpiCard({ label, value, delta, icon: Icon, sub }: KpiCardProps) {
 // ─── Top post card ─────────────────────────────────────────────────────────
 
 function TopPostCard({ post, rank }: { post: typeof TOP_POSTS[0]; rank: number }) {
-  const typeLabel: Record<string, string> = {
-    image: "Image", carousel: "Carousel", reel: "Reel", story: "Story",
-  };
+  const { t } = useI18n();
 
   return (
     <Card className="overflow-hidden border-border/40">
-      {/* Thumbnail placeholder */}
       <div className={cn("h-20 bg-gradient-to-br", post.gradientClass, "relative flex items-center justify-center")}>
         <span className="absolute left-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-black/40 text-[10px] font-bold text-white">
           {rank}
         </span>
         <span className="rounded-md bg-black/30 px-2 py-0.5 text-[10px] font-medium text-white/80">
-          {typeLabel[post.type]}
+          {t(`analytics.postTypes.${post.type}`)}
         </span>
       </div>
 
@@ -168,6 +167,7 @@ function TopPostCard({ post, rank }: { post: typeof TOP_POSTS[0]; rank: number }
 // ─── Main dashboard ────────────────────────────────────────────────────────
 
 export function AnalyticsDashboard() {
+  const { t } = useI18n();
   const [range, setRange] = useState<DateRange>("30d");
 
   const data     = useMemo(() => getMetrics(range), [range]);
@@ -176,38 +176,43 @@ export function AnalyticsDashboard() {
   const curr = useMemo(() => summarise(data), [data]);
   const prev = useMemo(() => summarise(prevData), [prevData]);
 
+  const vsPrev = t("analytics.vsPrevPeriod");
+
   const kpis: KpiCardProps[] = [
     {
-      label: "Total Impressions",
+      label: t("analytics.kpis.totalImpressions"),
       value: fmtNumber(curr.totalImpressions),
       delta: pctChange(curr.totalImpressions, prev.totalImpressions),
       icon: Eye,
-      sub: `${fmtNumber(curr.totalImpressions)} in selected period`,
+      sub: t("analytics.kpis.totalImpressionsSub", { value: fmtNumber(curr.totalImpressions) }),
+      vsPrevLabel: vsPrev,
     },
     {
-      label: "Avg Engagement Rate",
+      label: t("analytics.kpis.avgEngagementRate"),
       value: `${curr.avgEngagementRate}%`,
       delta: pctChange(curr.avgEngagementRate, prev.avgEngagementRate),
       icon: Heart,
-      sub: "Likes + comments + saves / reach",
+      sub: t("analytics.kpis.avgEngagementRateSub"),
+      vsPrevLabel: vsPrev,
     },
     {
-      label: "Total Followers",
+      label: t("analytics.kpis.totalFollowers"),
       value: fmtNumber(curr.totalFollowers),
       delta: pctChange(curr.totalFollowers, prev.totalFollowers),
       icon: Users,
-      sub: "Instagram account total",
+      sub: t("analytics.kpis.totalFollowersSub"),
+      vsPrevLabel: vsPrev,
     },
     {
-      label: "New Followers",
+      label: t("analytics.kpis.newFollowers"),
       value: `+${fmtNumber(curr.followersGained)}`,
       delta: pctChange(curr.followersGained, prev.followersGained),
       icon: TrendingUp,
-      sub: "Gained in selected period",
+      sub: t("analytics.kpis.newFollowersSub"),
+      vsPrevLabel: vsPrev,
     },
   ];
 
-  // Reduce X-axis ticks based on range
   const ticks7  = sampleTicks(data, 7);
   const ticks30 = sampleTicks(data, 8);
   const ticks90 = sampleTicks(data, 10);
@@ -225,12 +230,12 @@ export function AnalyticsDashboard() {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold">Analytics</h1>
+              <h1 className="text-2xl font-bold">{t("analytics.title")}</h1>
               <span className="rounded-md border border-border/50 bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
-                Metricool
+                {t("analytics.badge")}
               </span>
             </div>
-            <p className="text-sm text-muted-foreground">Content performance overview</p>
+            <p className="text-sm text-muted-foreground">{t("analytics.subtitle")}</p>
           </div>
         </div>
 
@@ -262,62 +267,29 @@ export function AnalyticsDashboard() {
 
       {/* ── Impressions + Reach ─────────────────────────────────────── */}
       <div className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-5">
-        {/* Impressions line chart — 3/5 width */}
         <Card className="lg:col-span-3">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Impressions & Reach</CardTitle>
-            <p className="text-xs text-muted-foreground">Daily view counts over time</p>
+            <CardTitle className="text-sm font-medium">{t("analytics.charts.impressionsReach")}</CardTitle>
+            <p className="text-xs text-muted-foreground">{t("analytics.charts.impressionsReachSub")}</p>
           </CardHeader>
           <CardContent>
             <ChartContainer config={impressionsConfig} className="h-52 w-full">
               <LineChart data={data} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  vertical={false}
-                  stroke="hsl(var(--border))"
-                />
-                <XAxis
-                  dataKey="date"
-                  ticks={xTicks}
-                  tick={axisStyle}
-                  tickLine={false}
-                  axisLine={false}
-                />
-                <YAxis
-                  tick={axisStyle}
-                  tickLine={false}
-                  axisLine={false}
-                  tickFormatter={fmtNumber}
-                  width={42}
-                />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
+                <XAxis dataKey="date" ticks={xTicks} tick={axisStyle} tickLine={false} axisLine={false} />
+                <YAxis tick={axisStyle} tickLine={false} axisLine={false} tickFormatter={fmtNumber} width={42} />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Line
-                  type="monotone"
-                  dataKey="impressions"
-                  stroke="var(--color-impressions)"
-                  strokeWidth={2}
-                  dot={false}
-                  activeDot={{ r: 4 }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="reach"
-                  stroke="var(--color-reach)"
-                  strokeWidth={2}
-                  dot={false}
-                  strokeDasharray="4 2"
-                  activeDot={{ r: 4 }}
-                />
+                <Line type="monotone" dataKey="impressions" stroke="var(--color-impressions)" strokeWidth={2} dot={false} activeDot={{ r: 4 }} />
+                <Line type="monotone" dataKey="reach" stroke="var(--color-reach)" strokeWidth={2} dot={false} strokeDasharray="4 2" activeDot={{ r: 4 }} />
               </LineChart>
             </ChartContainer>
           </CardContent>
         </Card>
 
-        {/* Engagement rate area chart — 2/5 width */}
         <Card className="lg:col-span-2">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Engagement Rate</CardTitle>
-            <p className="text-xs text-muted-foreground">% of reached audience</p>
+            <CardTitle className="text-sm font-medium">{t("analytics.charts.engagementRate")}</CardTitle>
+            <p className="text-xs text-muted-foreground">{t("analytics.charts.engagementRateSub")}</p>
           </CardHeader>
           <CardContent>
             <ChartContainer config={engagementConfig} className="h-52 w-full">
@@ -328,75 +300,31 @@ export function AnalyticsDashboard() {
                     <stop offset="95%" stopColor="var(--color-engagementRate)" stopOpacity={0.02} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  vertical={false}
-                  stroke="hsl(var(--border))"
-                />
-                <XAxis
-                  dataKey="date"
-                  ticks={xTicks}
-                  tick={axisStyle}
-                  tickLine={false}
-                  axisLine={false}
-                />
-                <YAxis
-                  tick={axisStyle}
-                  tickLine={false}
-                  axisLine={false}
-                  tickFormatter={(v) => `${v}%`}
-                  width={36}
-                />
-                <ChartTooltip
-                  content={<ChartTooltipContent formatter={(v) => `${v}%`} />}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="engagementRate"
-                  stroke="var(--color-engagementRate)"
-                  strokeWidth={2}
-                  fill="url(#engGradient)"
-                  dot={false}
-                />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
+                <XAxis dataKey="date" ticks={xTicks} tick={axisStyle} tickLine={false} axisLine={false} />
+                <YAxis tick={axisStyle} tickLine={false} axisLine={false} tickFormatter={(v) => `${v}%`} width={36} />
+                <ChartTooltip content={<ChartTooltipContent formatter={(v) => `${v}%`} />} />
+                <Area type="monotone" dataKey="engagementRate" stroke="var(--color-engagementRate)" strokeWidth={2} fill="url(#engGradient)" dot={false} />
               </AreaChart>
             </ChartContainer>
           </CardContent>
         </Card>
       </div>
 
-      {/* ── Follower Growth bar chart ────────────────────────────────── */}
+      {/* ── Follower Growth ─────────────────────────────────────────── */}
       <Card className="mb-6">
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium">Follower Growth</CardTitle>
-          <p className="text-xs text-muted-foreground">New followers gained per day</p>
+          <CardTitle className="text-sm font-medium">{t("analytics.charts.followerGrowth")}</CardTitle>
+          <p className="text-xs text-muted-foreground">{t("analytics.charts.followerGrowthSub")}</p>
         </CardHeader>
         <CardContent>
           <ChartContainer config={followersConfig} className="h-44 w-full">
             <BarChart data={data} margin={{ top: 4, right: 8, left: 0, bottom: 0 }} barSize={range === "90d" ? 3 : range === "30d" ? 8 : 20}>
-              <CartesianGrid
-                strokeDasharray="3 3"
-                vertical={false}
-                stroke="hsl(var(--border))"
-              />
-              <XAxis
-                dataKey="date"
-                ticks={xTicks}
-                tick={axisStyle}
-                tickLine={false}
-                axisLine={false}
-              />
-              <YAxis
-                tick={axisStyle}
-                tickLine={false}
-                axisLine={false}
-                width={32}
-              />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
+              <XAxis dataKey="date" ticks={xTicks} tick={axisStyle} tickLine={false} axisLine={false} />
+              <YAxis tick={axisStyle} tickLine={false} axisLine={false} width={32} />
               <ChartTooltip content={<ChartTooltipContent />} />
-              <Bar
-                dataKey="followersGained"
-                fill="var(--color-followersGained)"
-                radius={[3, 3, 0, 0]}
-              />
+              <Bar dataKey="followersGained" fill="var(--color-followersGained)" radius={[3, 3, 0, 0]} />
             </BarChart>
           </ChartContainer>
         </CardContent>
@@ -406,8 +334,8 @@ export function AnalyticsDashboard() {
       <div>
         <div className="mb-4 flex items-center justify-between">
           <div>
-            <h2 className="text-sm font-semibold">Top Posts</h2>
-            <p className="text-xs text-muted-foreground">Best performing content by impressions</p>
+            <h2 className="text-sm font-semibold">{t("analytics.topPosts")}</h2>
+            <p className="text-xs text-muted-foreground">{t("analytics.topPostsSub")}</p>
           </div>
         </div>
 

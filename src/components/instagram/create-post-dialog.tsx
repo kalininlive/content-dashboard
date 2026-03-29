@@ -20,6 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { InstagramPost, PostStatus, PostType } from "@/types/index";
+import { useI18n } from "@/lib/i18n";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -50,6 +51,7 @@ export function CreatePostDialog({
   onOpenChange,
   onSubmit,
 }: CreatePostDialogProps) {
+  const { t } = useI18n();
   const [form, setForm] = useState<FormState>(DEFAULT_FORM);
 
   function set<K extends keyof FormState>(key: K, value: FormState[K]) {
@@ -84,18 +86,18 @@ export function CreatePostDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[440px]">
         <DialogHeader>
-          <DialogTitle className="text-base">New Post Idea</DialogTitle>
+          <DialogTitle className="text-base">{t("createPost.title")}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4 pt-1">
           {/* Description */}
           <div className="space-y-1.5">
             <Label htmlFor="description" className="text-xs text-muted-foreground">
-              Description
+              {t("createPost.descriptionLabel")}
             </Label>
             <Textarea
               id="description"
-              placeholder="What's the post about? Describe the content, tone, and key message."
+              placeholder={t("createPost.descriptionPlaceholder")}
               rows={4}
               value={form.description}
               onChange={(e) => set("description", e.target.value)}
@@ -107,7 +109,7 @@ export function CreatePostDialog({
           {/* Post Type + Status row */}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground">Post Type</Label>
+              <Label className="text-xs text-muted-foreground">{t("createPost.postTypeLabel")}</Label>
               <Select
                 value={form.postType}
                 onValueChange={(v) => set("postType", v as PostType)}
@@ -116,16 +118,17 @@ export function CreatePostDialog({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="image">Image</SelectItem>
-                  <SelectItem value="carousel">Carousel</SelectItem>
-                  <SelectItem value="reel">Reel</SelectItem>
-                  <SelectItem value="story">Story</SelectItem>
+                  {(["image", "carousel", "reel", "story"] as PostType[]).map((type) => (
+                    <SelectItem key={type} value={type}>
+                      {t(`instagram.postTypes.${type}`)}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground">Status</Label>
+              <Label className="text-xs text-muted-foreground">{t("createPost.statusLabel")}</Label>
               <Select
                 value={form.status}
                 onValueChange={(v) => set("status", v as PostStatus)}
@@ -134,9 +137,11 @@ export function CreatePostDialog({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="idea">Idea</SelectItem>
-                  <SelectItem value="draft">Draft</SelectItem>
-                  <SelectItem value="scheduled">Scheduled</SelectItem>
+                  {(["idea", "draft", "scheduled"] as PostStatus[]).map((s) => (
+                    <SelectItem key={s} value={s}>
+                      {t(`instagram.statuses.${s}`)}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -146,7 +151,7 @@ export function CreatePostDialog({
           {isScheduled && (
             <div className="space-y-1.5">
               <Label htmlFor="publishDate" className="text-xs text-muted-foreground">
-                Publish Date
+                {t("createPost.publishDateLabel")}
               </Label>
               <Input
                 id="publishDate"
@@ -160,10 +165,10 @@ export function CreatePostDialog({
 
           <DialogFooter className="pt-2">
             <Button type="button" variant="ghost" size="sm" onClick={handleCancel}>
-              Cancel
+              {t("common.cancel")}
             </Button>
             <Button type="submit" size="sm" disabled={!canSubmit}>
-              Create Post
+              {t("createPost.createButton")}
             </Button>
           </DialogFooter>
         </form>

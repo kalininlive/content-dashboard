@@ -11,42 +11,25 @@ import {
   LayoutDashboard,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useI18n, type Locale } from "@/lib/i18n";
 
-const navItems = [
-  {
-    label: "Overview",
-    href: "/dashboard",
-    icon: LayoutDashboard,
-  },
-  {
-    label: "Instagram",
-    href: "/dashboard/instagram",
-    icon: Instagram,
-  },
-  {
-    label: "Analytics",
-    href: "/dashboard/analytics",
-    icon: BarChart2,
-  },
-  {
-    label: "Calendar",
-    href: "/dashboard/calendar",
-    icon: CalendarDays,
-  },
-  {
-    label: "Competitors",
-    href: "/dashboard/competitors",
-    icon: Users,
-  },
-  {
-    label: "News",
-    href: "/dashboard/news",
-    icon: Newspaper,
-  },
+const NAV_ITEMS = [
+  { key: "overview",    href: "/dashboard",             icon: LayoutDashboard },
+  { key: "instagram",   href: "/dashboard/instagram",   icon: Instagram       },
+  { key: "analytics",   href: "/dashboard/analytics",   icon: BarChart2       },
+  { key: "calendar",    href: "/dashboard/calendar",    icon: CalendarDays    },
+  { key: "competitors", href: "/dashboard/competitors", icon: Users           },
+  { key: "news",        href: "/dashboard/news",        icon: Newspaper       },
+] as const;
+
+const LOCALES: { value: Locale; label: string }[] = [
+  { value: "en", label: "EN" },
+  { value: "ru", label: "RU" },
 ];
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { t, locale, setLocale } = useI18n();
 
   return (
     <aside className="flex h-screen w-60 flex-col border-r border-border bg-sidebar">
@@ -56,13 +39,13 @@ export function Sidebar() {
           <LayoutDashboard className="h-4 w-4 text-sidebar-primary-foreground" />
         </div>
         <span className="text-sm font-semibold text-sidebar-foreground">
-          ContentDash
+          {t("sidebar.appName")}
         </span>
       </div>
 
       {/* Navigation */}
       <nav className="flex flex-1 flex-col gap-1 p-3">
-        {navItems.map((item) => {
+        {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
           const isActive =
             item.href === "/dashboard"
@@ -81,15 +64,32 @@ export function Sidebar() {
               )}
             >
               <Icon className="h-4 w-4 shrink-0" />
-              {item.label}
+              {t(`sidebar.nav.${item.key}`)}
             </Link>
           );
         })}
       </nav>
 
-      {/* Footer */}
+      {/* Footer: version + language switcher */}
       <div className="border-t border-border px-4 py-3">
-        <p className="text-xs text-sidebar-foreground/40">Content Dashboard v0.1</p>
+        <p className="mb-2 text-xs text-sidebar-foreground/40">{t("sidebar.footer")}</p>
+        <div className="flex gap-1">
+          {LOCALES.map(({ value, label }) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() => setLocale(value)}
+              className={cn(
+                "rounded px-2 py-0.5 text-xs font-medium transition-colors",
+                locale === value
+                  ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                  : "text-sidebar-foreground/50 hover:text-sidebar-foreground"
+              )}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
       </div>
     </aside>
   );
