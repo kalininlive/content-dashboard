@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import {
-  Instagram,
+  Camera,
   Plus,
   Lightbulb,
   FileText,
@@ -68,7 +68,7 @@ export function InstagramManager() {
       <div className="mb-8 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-md bg-muted">
-            <Instagram className="h-5 w-5 text-muted-foreground" />
+            <Camera className="h-5 w-5 text-muted-foreground" />
           </div>
           <div>
             <h1 className="text-2xl font-bold">{t("instagram.title")}</h1>
@@ -162,7 +162,7 @@ function EmptyTabState({
     <Card className="border-dashed border-border/40">
       <CardContent className="flex flex-col items-center justify-center py-16 text-center">
         <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
-          <Instagram className="h-5 w-5 text-muted-foreground" />
+          <Camera className="h-5 w-5 text-muted-foreground" />
         </div>
         <h3 className="mb-1 text-sm font-medium">{t(`instagram.empty.${status}.title`)}</h3>
         <p className="mb-5 max-w-xs text-xs text-muted-foreground">{t(`instagram.empty.${status}.desc`)}</p>

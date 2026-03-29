@@ -5,10 +5,10 @@ import {
   CalendarDays,
   ChevronLeft,
   ChevronRight,
-  Instagram,
-  Youtube,
-  Twitter,
-  Linkedin,
+  Camera,
+  PlayCircle,
+  Bird,
+  Briefcase,
   Music2,
   X,
   Clock,
@@ -35,11 +35,11 @@ const MAX_CHIPS_PER_CELL = 2;
 // ─── Platform icon map ────────────────────────────────────────────────────────
 
 const PLATFORM_ICON: Record<Platform, React.ElementType> = {
-  instagram: Instagram,
-  youtube:   Youtube,
+  instagram: Camera,
+  youtube:   PlayCircle,
   tiktok:    Music2,
-  twitter:   Twitter,
-  linkedin:  Linkedin,
+  twitter:   Bird,
+  linkedin:  Briefcase,
 };
 
 // ─── Calendar grid builder ────────────────────────────────────────────────────

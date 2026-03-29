@@ -22,10 +22,10 @@ import {
   ChevronsUpDown,
   ChevronUp,
   ChevronDown,
-  Instagram,
-  Youtube,
-  Twitter,
-  Linkedin,
+  Camera,
+  PlayCircle,
+  Bird,
+  Briefcase,
   Music2,
   Trash2,
   TrendingUp,
@@ -51,11 +51,11 @@ import { useI18n } from "@/lib/i18n";
 // ─── Platform icon map ────────────────────────────────────────────────────────
 
 const PLATFORM_ICON: Record<Platform, React.ElementType> = {
-  instagram: Instagram,
-  youtube:   Youtube,
+  instagram: Camera,
+  youtube:   PlayCircle,
   tiktok:    Music2,
-  twitter:   Twitter,
-  linkedin:  Linkedin,
+  twitter:   Bird,
+  linkedin:  Briefcase,
 };
 
 // ─── Tiny SVG sparkline ───────────────────────────────────────────────────────

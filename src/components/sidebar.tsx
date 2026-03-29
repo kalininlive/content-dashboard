@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  Instagram,
+  Camera,
   BarChart2,
   CalendarDays,
   Users,
@@ -15,7 +15,7 @@ import { useI18n, type Locale } from "@/lib/i18n";
 
 const NAV_ITEMS = [
   { key: "overview",    href: "/dashboard",             icon: LayoutDashboard },
-  { key: "instagram",   href: "/dashboard/instagram",   icon: Instagram       },
+  { key: "instagram",   href: "/dashboard/instagram",   icon: Camera          },
   { key: "analytics",   href: "/dashboard/analytics",   icon: BarChart2       },
   { key: "calendar",    href: "/dashboard/calendar",    icon: CalendarDays    },
   { key: "competitors", href: "/dashboard/competitors", icon: Users           },

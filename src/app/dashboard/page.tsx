@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Instagram, BarChart2, CalendarDays, Users, Newspaper } from "lucide-react";
+import { Camera, BarChart2, CalendarDays, Users, Newspaper } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 
 export default function DashboardPage() {
@@ -12,7 +12,7 @@ export default function DashboardPage() {
       titleKey: "dashboard.modules.instagram.title",
       descKey:  "dashboard.modules.instagram.description",
       statKey:  "dashboard.modules.instagram.stat",
-      icon: Instagram,
+      icon: Camera,
       href: "/dashboard/instagram",
     },
     {
