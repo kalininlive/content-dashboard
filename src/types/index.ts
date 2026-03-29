@@ -29,6 +29,36 @@ export interface CalendarPost {
   description?: string;
 }
 
+// ─── Competitors ───────────────────────────────────────────────────────────
+
+export interface CompetitorPost {
+  id: string;
+  content: string;
+  type: string;
+  date: string;
+  likes: number;
+  comments: number;
+  shares: number;
+  engagementRate: number;
+}
+
+export interface Competitor {
+  id: string;
+  name: string;
+  handle: string;
+  platform: Platform;
+  avatarGradient: string;
+  followers: number;
+  growth30d: number[];       // 30 daily follower counts (cumulative)
+  gainedLast30d: number;
+  avgEngagementRate: number;
+  postsPerWeek: number;
+  totalPosts: number;
+  lastPostDate: string;      // "YYYY-MM-DD"
+  recentPosts: CompetitorPost[];
+  addedAt: string;
+}
+
 // ─── Generic (future use) ───────────────────────────────────────────────────
 
 export interface Post {
