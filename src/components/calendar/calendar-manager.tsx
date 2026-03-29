@@ -85,7 +85,7 @@ function ContentChip({
 }: {
   post: CalendarPost;
   compact?: boolean;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
   const meta = PLATFORM_META[post.platform];
   const isScheduled = post.status === "scheduled";
