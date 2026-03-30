@@ -10,9 +10,13 @@ import {
   Newspaper,
   LayoutDashboard,
   X,
+  Settings2,
+  LogOut,
+  PlusCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useI18n, type Locale } from "@/lib/i18n";
+import { signOut } from "next-auth/react";
 
 const NAV_ITEMS = [
   { key: "overview",    href: "/dashboard",             icon: LayoutDashboard },
@@ -107,6 +111,55 @@ export function Sidebar({ onClose }: SidebarProps) {
           );
         })}
       </nav>
+
+      {/* Create Post CTA */}
+      <div className="relative px-2 pb-1">
+        <Link
+          href="/dashboard/posts/new"
+          onClick={() => onClose?.()}
+          className="flex items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-primary-foreground transition-all"
+          style={{ background: "oklch(0.65 0.26 285)", boxShadow: "0 0 16px oklch(0.65 0.26 285 / 0.3)" }}
+        >
+          <PlusCircle className="h-4 w-4" />
+          Создать пост
+        </Link>
+      </div>
+
+      {/* Settings + Logout */}
+      <div className="relative px-2 pb-2">
+        <Link
+          href="/dashboard/settings"
+          onClick={() => onClose?.()}
+          className={cn(
+            "group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm",
+            pathname.startsWith("/dashboard/settings")
+              ? "bg-sidebar-accent font-medium text-sidebar-foreground shadow-[0_0_0_1px_oklch(0.65_0.26_285_/_0.25)]"
+              : "text-sidebar-foreground/50 hover:bg-sidebar-accent/40 hover:text-sidebar-foreground"
+          )}
+        >
+          <span
+            className={cn(
+              "flex h-7 w-7 items-center justify-center rounded-lg",
+              pathname.startsWith("/dashboard/settings")
+                ? "bg-primary/20 text-primary"
+                : "text-current group-hover:text-sidebar-foreground"
+            )}
+          >
+            <Settings2 className="h-4 w-4 shrink-0" />
+          </span>
+          Настройки
+        </Link>
+        <button
+          type="button"
+          onClick={() => signOut({ callbackUrl: "/login" })}
+          className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-sidebar-foreground/50 hover:bg-sidebar-accent/40 hover:text-sidebar-foreground"
+        >
+          <span className="flex h-7 w-7 items-center justify-center rounded-lg text-current group-hover:text-sidebar-foreground">
+            <LogOut className="h-4 w-4 shrink-0" />
+          </span>
+          Выйти
+        </button>
+      </div>
 
       {/* Footer */}
       <div className="relative border-t border-sidebar-border/50 px-4 py-4">

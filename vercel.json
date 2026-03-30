@@ -1,0 +1,16 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/publish-scheduled",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/cron/refresh-instagram",
+      "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/cron/refresh-token",
+      "schedule": "0 12 * * *"
+    }
+  ]
+}
