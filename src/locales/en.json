@@ -20,6 +20,12 @@
   "dashboard": {
     "title": "Overview",
     "subtitle": "Welcome to your content dashboard. Select a module to get started.",
+    "stats": {
+      "posts": "Total Posts",
+      "reach": "Reach",
+      "scheduled": "Scheduled",
+      "tracked": "Tracked"
+    },
     "modules": {
       "instagram": {
         "title": "Instagram Manager",

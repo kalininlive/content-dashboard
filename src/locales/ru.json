@@ -20,6 +20,12 @@
   "dashboard": {
     "title": "Обзор",
     "subtitle": "Добро пожаловать в ваш дашборд. Выберите модуль для начала работы.",
+    "stats": {
+      "posts": "Всего постов",
+      "reach": "Охват",
+      "scheduled": "Запланировано",
+      "tracked": "Отслеживается"
+    },
     "modules": {
       "instagram": {
         "title": "Менеджер Instagram",
